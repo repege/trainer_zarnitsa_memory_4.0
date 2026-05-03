@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Зарница 2.0 — бесконечный тренажёр</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Зарница 2.0</h1>
+      <p>Бесконечный тренажёр: повторяем до полного закрепления</p>
+    </div>
+    <nav>
+      <button id="studentModeBtn" class="nav-btn active">Тренировка</button>
+      <button id="adminModeBtn" class="nav-btn">Админ</button>
+      <button id="statsTopBtn" class="nav-btn">Статистика</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="studentPanel" class="panel">
+      <div id="startCard" class="card intro">
+        <h2>Режим ученика</h2>
+        <p>Вопросы появляются по одному и случайно. Чтобы вопрос исчез, нужно ответить правильно два раза. Ошибся — увидишь правильный ответ и пояснение, а вопрос вернётся позже.</p>
+        <div class="grid2">
+          <label>Ник игрока
+            <input id="playerName" placeholder="Например: 8А Иван" maxlength="40" />
+          </label>
+          <label>Блок вопросов
+            <select id="blockFilter"></select>
+          </label>
+        </div>
+        <div class="controls">
+          <button id="startQuizBtn" class="primary">Начать тренировку</button>
+          <button id="continueQuizBtn">Продолжить</button>
+        </div>
+        <p class="small">Статистика сохраняется в этом браузере. Ученик может открыть статистику и сделать скриншот: закреплено, ошибки, попытки, время.</p>
+      </div>
+
+      <div id="quizArea" class="hidden">
+        <div class="quiz-top card slim">
+          <div>
+            <b id="quizPlayerLabel"></b>
+            <span id="quizProgress"></span>
+          </div>
+          <div class="mini-actions">
+            <button id="statsBtn">Статистика</button>
+            <button id="finishBtn">Завершить</button>
+          </div>
+        </div>
+        <article id="questionCard" class="question-card"></article>
+      </div>
+    </section>
+
+    <section id="adminPanel" class="panel hidden">
+      <div id="loginCard" class="card">
+        <h2>Админ-панель</h2>
+        <p>Пароль по умолчанию: <b>1234</b>. Потом его можно поменять внутри админки.</p>
+        <label>Пароль администратора
+          <input id="adminPassword" type="password" placeholder="Введите пароль" />
+        </label>
+        <button id="loginBtn" class="primary">Войти</button>
+        <p id="loginError" class="error"></p>
+      </div>
+
+      <div id="editorCard" class="card hidden">
+        <div class="admin-head">
+          <div>
+            <h2>Админ-панель</h2>
+            <p>Можно менять вопросы, ответы, пояснения, картинки, пароль и смотреть статистику игроков по режиму закрепления.</p>
+          </div>
+          <button id="logoutBtn">Выйти</button>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active" data-tab="questionsTab">Вопросы</button>
+          <button class="tab" data-tab="statsTab">Статистика игроков</button>
+          <button class="tab" data-tab="settingsTab">Настройки</button>
+        </div>
+
+        <div id="questionsTab" class="tab-panel">
+          <div class="admin-actions">
+            <button id="addQuestionBtn" class="primary">Добавить вопрос</button>
+            <button id="exportBtn">Экспорт вопросов JSON</button>
+            <label class="file-label">Импорт вопросов JSON
+              <input id="importInput" type="file" accept="application/json" />
+            </label>
+            <button id="resetBtn" class="danger">Сбросить вопросы</button>
+          </div>
+          <div class="tip">
+            <b>Картинки:</b> можно вставить ссылку <code>assets/q1.jpg</code>, внешнюю ссылку <code>https://...</code> или загрузить файл прямо в админке. Для GitHub лучше класть картинки в папку <code>assets</code> и указывать путь.
+          </div>
+          <div id="questionList"></div>
+        </div>
+
+        <div id="statsTab" class="tab-panel hidden">
+          <div class="admin-actions">
+            <button id="refreshStatsBtn">Обновить</button>
+            <button id="exportStatsJsonBtn">Экспорт статистики JSON</button>
+            <button id="exportStatsCsvBtn">Экспорт CSV</button>
+            <button id="clearStatsBtn" class="danger">Очистить статистику</button>
+          </div>
+          <div id="adminStatsBox"></div>
+          <p class="small">На GitHub Pages сайт работает без сервера, поэтому здесь видна статистика, сохранённая в этом браузере. Для сбора со всех устройств ученики могут присылать скриншот статистики или экспорт JSON.</p>
+        </div>
+
+        <div id="settingsTab" class="tab-panel hidden">
+          <h3>Смена пароля</h3>
+          <div class="grid2">
+            <label>Новый пароль
+              <input id="newAdminPassword" type="password" placeholder="Новый пароль" />
+            </label>
+            <label>Повторите пароль
+              <input id="repeatAdminPassword" type="password" placeholder="Ещё раз" />
+            </label>
+          </div>
+          <button id="changePasswordBtn" class="primary">Сменить пароль</button>
+          <p id="passwordMessage" class="small"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="statsModal" class="modal hidden">
+    <div class="modal-card" id="statsCapture">
+      <div class="modal-head">
+        <h2>Статистика</h2>
+        <button id="closeStatsBtn">Закрыть</button>
+      </div>
+      <div id="statsContent"></div>
+      <p class="small">Этот блок удобно заскринить.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>Статический сайт для GitHub Pages. Все данные хранятся в браузере.</p>
+  </footer>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
