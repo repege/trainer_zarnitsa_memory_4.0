@@ -8,7 +8,7 @@ const KEYS = {
   active: 'zarnitsa_active_session_v3'
 };
 
-const DEFAULT_ADMIN_PASSWORD = '1234';
+const DEFAULT_ADMIN_PASSWORD = 'severyanin';
 
 let questions = loadQuestions();
 let adminLoggedIn = false;
